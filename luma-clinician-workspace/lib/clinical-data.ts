@@ -46,3 +46,10 @@ export async function loadPatientTimeline(patientId:string){
  for(const result of[observations,medications,assessments,summaries,alerts])if(result.error)throw result.error
  return{observations:observations.data,medications:medications.data,assessments:assessments.data,summaries:summaries.data,alerts:alerts.data}
 }
+
+export async function refreshPatientSummary(patientId:string,startDate?:string,endDate?:string){
+ const client=configured()
+ const {data,error}=await client.rpc('refresh_patient_summary',{target_patient:patientId,range_start:startDate??undefined,range_end:endDate??undefined})
+ if(error)throw error
+ return data
+}

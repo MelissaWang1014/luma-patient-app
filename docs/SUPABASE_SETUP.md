@@ -8,6 +8,7 @@ The GitHub integration reads migrations from the repository-root `supabase/` dir
 
 - `supabase/migrations/202608290001_initial_schema.sql`
 - `supabase/migrations/202608300001_cognitive_care_sync.sql`
+- `supabase/migrations/202608300002_summary_engine.sql`
 
 The second migration adds the shared cognitive-care workflow. A patient is a clinical subject and does not need a login. Caregivers and clinicians sign in through `profiles` and receive explicit access through `patient_access`.
 
@@ -59,7 +60,7 @@ Client helpers are available in `src/lib/care-data.ts` and `luma-clinician-works
 
 Write raw caregiver events first. A protected Edge Function should calculate medication adherence, sleep/activity/nutrition changes, assessment trends, and rule-based alerts. It may then ask an AI model to turn those verified facts into a narrative. The function writes the result to `patient_summaries` and includes the supporting `care_observations.id` values in `evidence_observation_ids`.
 
-Urgent alert creation must remain rule-based. AI can explain an alert but should not be the only mechanism that decides whether a patient is red, yellow, or green.
+The `refresh_patient_summary` database function now calculates the initial metrics and green/yellow/red state. Urgent alert creation remains rule-based. AI can explain an alert but should not be the only mechanism that decides status.
 
 ## Healthcare warning
 

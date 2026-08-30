@@ -56,3 +56,10 @@ export async function submitAssessmentResponse(input:{assignmentId:string;patien
  await client.from('assessment_assignments').update({status:'completed',updated_at:new Date().toISOString()}).eq('id',input.assignmentId)
  return data
 }
+
+export async function refreshPatientSummary(patientId:string,startDate?:string,endDate?:string){
+ const client=configured()
+ const {data,error}=await client.rpc('refresh_patient_summary',{target_patient:patientId,range_start:startDate??undefined,range_end:endDate??undefined})
+ if(error)throw error
+ return data
+}
