@@ -39,8 +39,13 @@ The standard sign-in and invitation-code flow demonstrates how a caregiver accou
 
 **Live workspace:** [luma-clinician-workstation.noisy-fig-2085.chatgpt.site](https://luma-clinician-workstation.noisy-fig-2085.chatgpt.site/)
 
+**Hackathon demo login**
+
+- **Email:** `clinician.demo@luma.test`
+- **Password:** `LumaDemo!2026`
+
 1. Open the link in a desktop browser for the best layout.
-2. Sign in with the **judge clinician account supplied by the Nest C team**. Credentials are intentionally not stored in this public repository.
+2. Sign in with the hackathon demo credentials above.
 3. Start on **Patients** to review the registry, diagnoses, medications, last visits, and green/yellow/red condition indicators.
 4. Select a patient to open the longitudinal record and 14-day care summary.
 5. Open **Appointments**, then choose **Join now** to see the video-visit workspace with records and clinical guidance beside the call.
@@ -105,25 +110,6 @@ The repository also contains a database summary function that aggregates a patie
 - `supabase/migrations/` — database schema, permissions, invitations, and summary engine
 - `docs/` — synthetic records and Supabase setup notes
 - `docs/SUPABASE_SETUP.md` — backend configuration instructions
-
-## Run locally
-
-The patient/caregiver app requires Node.js 22 or newer:
-
-```bash
-npm install
-npm run dev
-```
-
-Run the clinician workspace separately:
-
-```bash
-cd luma-clinician-workspace
-pnpm install
-pnpm dev
-```
-
-To connect a local build to Supabase, follow [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md). Never place a Supabase service-role key or database password in a frontend environment variable.
 
 ## Prototype and safety notice
 
