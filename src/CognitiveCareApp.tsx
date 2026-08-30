@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { listAssignedCareTasks, recordCareObservation } from "./lib/care-data";
 
 type Tab = "today" | "changes" | "professional" | "community" | "profile";
 type MedicationStatus = "pending" | "taken" | "missed";
@@ -1206,7 +1207,7 @@ type SpeechWindow = Window & {
   webkitSpeechRecognition?: new () => Recognizer;
 };
 
-export default function CognitiveCareApp({ patientId }: { patientId: PatientId }) {
+export default function CognitiveCareApp({ patientId, databasePatientId }: { patientId: PatientId; databasePatientId?: string | null }) {
   const patient = patients[patientId],
     content = patientClinicalContent[patientId];
   const [tab, setTab] = useState<Tab>("today");
@@ -1214,7 +1215,9 @@ export default function CognitiveCareApp({ patientId }: { patientId: PatientId }
   const [symptoms, setSymptoms] = useState<Record<string, boolean>>({}),
     [observation, setObservation] = useState(""),
     [structured, setStructured] = useState<StructuredObservation | null>(null),
-    [checkInSaved, setCheckInSaved] = useState(false);
+    [checkInSaved, setCheckInSaved] = useState(false),
+    [syncMessage, setSyncMessage] = useState(""),
+    [assignedCare, setAssignedCare] = useState<{ assessments: any[]; medications: any[] }>({ assessments: [], medications: [] });
   const [timeline, setTimeline] = useState<TimelineEvent[]>(content.timeline),
     [summaryReady, setSummaryReady] = useState(false),
     [shared, setShared] = useState(false);
@@ -1240,6 +1243,12 @@ export default function CognitiveCareApp({ patientId }: { patientId: PatientId }
     window.addEventListener("luma-movement-reminder", record);
     return () => window.removeEventListener("luma-movement-reminder", record);
   }, [patient.id]);
+  useEffect(() => {
+    if (!databasePatientId) return;
+    listAssignedCareTasks(databasePatientId)
+      .then((result) => setAssignedCare({ assessments: result.assessments ?? [], medications: result.medications ?? [] }))
+      .catch(() => {});
+  }, [databasePatientId]);
   const observationCount = timeline.filter((item) => item.kind === "observation").length;
   const adherence = useMemo(() => {
     const recorded = medications.filter((item) => item.status !== "pending"),
@@ -1395,7 +1404,7 @@ export default function CognitiveCareApp({ patientId }: { patientId: PatientId }
     setStructured(null);
     setObservation("");
   }
-  function saveCheckIn() {
+  async function saveCheckIn() {
     const selected = Object.entries(symptoms)
       .filter(([, checked]) => checked === true)
       .map(([label]) => label);
@@ -1414,6 +1423,26 @@ export default function CognitiveCareApp({ patientId }: { patientId: PatientId }
       ...items,
     ]);
     setCheckInSaved(true);
+    if (databasePatientId) {
+      try {
+        const severity = selected.length === 0 ? "routine" : selected.length <= 2 ? "watch" : "urgent";
+        const cognitiveFunction = Math.max(10, 100 - selected.length * 12);
+        await recordCareObservation({
+          patientId: databasePatientId,
+          category: "function",
+          severity,
+          valueNumber: cognitiveFunction,
+          unit: "percent_of_usual_baseline",
+          valueText: selected.length ? `${selected.length} changes from usual baseline` : "No change from usual baseline",
+          metadata: { selectedSymptoms: selected, sourceScreen: "daily_check" },
+        });
+        setSyncMessage("Synced with the clinician record");
+      } catch {
+        setSyncMessage("Saved here; clinician sync will retry later");
+      }
+    } else {
+      setSyncMessage("Saved in this demo");
+    }
   }
   return (
     <div className="mvp-stage">
@@ -1449,7 +1478,9 @@ export default function CognitiveCareApp({ patientId }: { patientId: PatientId }
               cancelStructure={() => setStructured(null)}
               saveCheckIn={saveCheckIn}
               checkInSaved={checkInSaved}
+              syncMessage={syncMessage}
               adherence={adherence}
+              assignedCare={assignedCare}
             />
           )}{" "}
           {tab === "changes" && (
@@ -1521,7 +1552,9 @@ type TodayProps = {
   cancelStructure: () => void;
   saveCheckIn: () => void;
   checkInSaved: boolean;
+  syncMessage: string;
   adherence: number | null;
+  assignedCare: { assessments: any[]; medications: any[] };
 };
 
 function Today(props: TodayProps) {
@@ -1537,6 +1570,7 @@ function Today(props: TodayProps) {
     cancelStructure,
     saveCheckIn,
     checkInSaved,
+    syncMessage,
   } = props;
   const [listening, setListening] = useState(false),
     [voiceError, setVoiceError] = useState("");
@@ -1614,6 +1648,17 @@ function Today(props: TodayProps) {
           </span>
         </article>
       )}
+      {(props.assignedCare.assessments.length > 0 || props.assignedCare.medications.length > 0) && (
+        <section className="today-card assigned-care-card">
+          <div className="card-head"><span><small>FROM YOUR CLINICIAN</small><h2>New care items</h2></span><Icon name="doctor" /></div>
+          {props.assignedCare.assessments.map((item) => (
+            <article key={item.id}><Icon name="note"/><span><b>{item.title}</b><small>Assessment · due {item.due_at?.slice(0,10) || "when convenient"}</small></span></article>
+          ))}
+          {props.assignedCare.medications.map((item) => (
+            <article key={item.id}><Icon name="pill"/><span><b>{item.medication_name} · {item.dose}</b><small>{item.instructions} · clinician plan</small></span></article>
+          ))}
+        </section>
+      )}
       <Reminders
         patient={patient}
         medications={props.medications}
@@ -1657,6 +1702,7 @@ function Today(props: TodayProps) {
             "Save today’s check"
           )}
         </button>
+        {syncMessage && <small className="check-sync-message">{syncMessage}</small>}
       </section>
       <section className="today-card observation-card">
         <div className="card-head">

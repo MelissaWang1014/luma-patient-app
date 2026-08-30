@@ -13,7 +13,7 @@ import syntheticBipolarRecord from "../docs/bipolar/01_synthetic_patient_record_
 import syntheticBipolarChecklist from "../docs/bipolar/02_patient_caregiver_checklist_EN.md?raw";
 import syntheticBipolarPharmacotherapy from "../docs/bipolar/03_pharmacotherapy_summary_EN.md?raw";
 import CognitiveCareApp, { patients, type PatientId } from "./CognitiveCareApp";
-import { claimPatientInvitation } from "./lib/care-data";
+import { claimPatientInvitation, listMyPatients } from "./lib/care-data";
 
 type Tab = "home" | "care" | "history" | "profile";
 type MedicationDraft = { name: string; details: string; action?: string };
@@ -300,6 +300,7 @@ export default function App() {
   const [showLogin, setShowLogin] = useState(true);
   const [authUserId, setAuthUserId] = useState<string | null>(null);
   const [patientId, setPatientId] = useState<PatientId>("margaret");
+  const [databasePatientId, setDatabasePatientId] = useState<string | null>(null);
   const [recordCarePlanApplied, setRecordCarePlanApplied] = useState(false);
   const [appliedMedications, setAppliedMedications] = useState<MedicationDraft[]>([]);
   const chatVoiceRef = useRef<VoiceRecognizer | null>(null);
@@ -351,6 +352,17 @@ export default function App() {
   }, []);
   useEffect(() => {
     if (!authUserId) return;
+    listMyPatients()
+      .then((links) => {
+        const first = links?.[0] as any;
+        const subject = Array.isArray(first?.patients) ? first.patients[0] : first?.patients;
+        if (!subject?.id) return;
+        setDatabasePatientId(subject.id);
+        const normalized = String(subject.display_name || "").toLowerCase();
+        if (normalized.includes("noah")) setPatientId("noah");
+        else if (normalized.includes("margaret")) setPatientId("margaret");
+      })
+      .catch(() => {});
     loadLatestJournal(authUserId)
       .then((entry) => {
         if (entry) {
@@ -375,14 +387,15 @@ export default function App() {
   if (showLogin)
     return (
       <LoginPage
-        onContinue={(userId, selectedPatientId) => {
+        onContinue={(userId, selectedPatientId, selectedDatabasePatientId) => {
           setAuthUserId(userId || null);
           if (selectedPatientId) setPatientId(selectedPatientId);
+          if (selectedDatabasePatientId) setDatabasePatientId(selectedDatabasePatientId);
           setShowLogin(false);
         }}
       />
     );
-  return <CognitiveCareApp key={patientId} patientId={patientId} />;
+  return <CognitiveCareApp key={`${patientId}-${databasePatientId}`} patientId={patientId} databasePatientId={databasePatientId} />;
   if (!role) return <RolePicker onChoose={setRole} />;
   if (role === "parent") return <ParentApp onSwitch={() => setRole(null)} />;
   return (
@@ -970,7 +983,7 @@ function Day({
 function LoginPage({
   onContinue,
 }: {
-  onContinue: (userId?: string, patientId?: PatientId) => void;
+  onContinue: (userId?: string, patientId?: PatientId, databasePatientId?: string) => void;
 }) {
   const [mode, setMode] = useState<"signin" | "signup">("signin"),
     [name, setName] = useState(""),
@@ -1008,16 +1021,16 @@ function LoginPage({
           ? await signIn(email, password)
           : await signUp(name.trim(), email, password);
       if (session) {
-        if (invitationCode.trim()) {
-          await claimPatientInvitation(name.trim(), invitationCode.trim());
-        }
+        const claimedPatientId = invitationCode.trim()
+          ? await claimPatientInvitation(name.trim(), invitationCode.trim())
+          : undefined;
         const normalizedName = name.trim().toLowerCase();
         const selectedPatient = normalizedName.includes("noah")
           ? "noah"
           : normalizedName.includes("margaret")
             ? "margaret"
             : undefined;
-        onContinue(session.user.id, selectedPatient);
+        onContinue(session.user.id, selectedPatient, claimedPatientId);
       }
       else setError("Check your email to confirm your account, then sign in.");
     } catch (reason) {

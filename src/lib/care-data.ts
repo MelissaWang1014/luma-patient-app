@@ -98,7 +98,7 @@ export async function listAssignedCareTasks(patientId: string) {
       .from("medication_plans")
       .select("*")
       .eq("patient_id", patientId)
-      .eq("status", "active")
+      .in("status", ["draft", "active"])
       .order("created_at"),
   ]);
   if (assessments.error) throw assessments.error;

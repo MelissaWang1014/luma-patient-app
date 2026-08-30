@@ -36,7 +36,13 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { createPatientInvitation } from '@/lib/clinical-data';
+import {
+  assignAssessment,
+  createMedicationPlan,
+  createPatientInvitation,
+  loadPatientTimeline,
+  refreshPatientSummary,
+} from '@/lib/clinical-data';
 import {
   getClinicianSession,
   isSupabaseConfigured,
@@ -45,6 +51,7 @@ import {
 } from '@/lib/supabase';
 
 type Patient = {
+  id: string;
   name: string;
   initials: string;
   age: number;
@@ -62,6 +69,7 @@ type Patient = {
 };
 const appointments: Patient[] = [
   {
+    id: '11111111-1111-4111-8111-111111111111',
     name: 'Margaret Lewis',
     initials: 'ML',
     age: 84,
@@ -78,6 +86,7 @@ const appointments: Patient[] = [
     alert: 'Dysphagia, poor intake and skin risk',
   },
   {
+    id: '22222222-2222-4222-8222-222222222222',
     name: 'Noah Bennett',
     initials: 'NB',
     age: 20,
@@ -94,6 +103,7 @@ const appointments: Patient[] = [
     alert: 'Increased self-injury and night waking',
   },
   {
+    id: '33333333-3333-4333-8333-333333333333',
     name: 'Eleanor Brooks',
     initials: 'EB',
     age: 78,
@@ -110,6 +120,7 @@ const appointments: Patient[] = [
     alert: 'More repetition over 8 weeks',
   },
   {
+    id: '44444444-4444-4444-8444-444444444444',
     name: 'Robert Hale',
     initials: 'RH',
     age: 82,
@@ -126,6 +137,7 @@ const appointments: Patient[] = [
     alert: 'No new concerns',
   },
   {
+    id: '55555555-5555-4555-8555-555555555555',
     name: 'Lillian Park',
     initials: 'LP',
     age: 74,
@@ -142,6 +154,7 @@ const appointments: Patient[] = [
     alert: 'Two-point MoCA decline',
   },
   {
+    id: '66666666-6666-4666-8666-666666666666',
     name: 'Samuel Ortiz',
     initials: 'SO',
     age: 86,
@@ -168,7 +181,7 @@ const week = [
   ['SUN', '6'],
 ];
 export default function Home() {
-  const [view, setView] = useState<'patients' | 'schedule' | 'video'>(
+  const [view, setView] = useState<'patients' | 'schedule' | 'record'>(
       'patients',
     ),
     [patient, setPatient] = useState(appointments[0]),
@@ -200,7 +213,7 @@ export default function Home() {
   }
   function join(p: Patient) {
     setPatient(p);
-    setView('video');
+    setView('record');
   }
   return (
     <div className="cog-shell">
@@ -220,7 +233,7 @@ export default function Home() {
         ) : view === 'schedule' ? (
           <Schedule join={join} notify={notify} />
         ) : (
-          <Consult patient={patient} notify={notify} open={setModal} />
+          <PatientRecordWorkspace patient={patient} notify={notify} open={setModal} />
         )}
       </main>
       {modal && (
@@ -400,7 +413,7 @@ function Top({
   return (
     <header className="cog-top">
       <div>
-        {view === 'video' ? (
+        {view === 'record' ? (
           <button className="cog-back" onClick={back}>
             <ArrowLeft />
             Patient records
@@ -469,6 +482,7 @@ function Registry({
       setAdded((current) => [
         ...current,
         {
+          id: invitation.patient_id,
           name: name.trim(),
           initials,
           age: 0,
@@ -828,7 +842,9 @@ function Schedule({
     </div>
   );
 }
-function Consult({
+type TimelineData = Awaited<ReturnType<typeof loadPatientTimeline>>;
+
+function PatientRecordWorkspace({
   patient: p,
   notify,
   open,
@@ -837,20 +853,56 @@ function Consult({
   notify: (x: string) => void;
   open: (x: 'test' | 'rx') => void;
 }) {
-  const [tab, setTab] = useState<'record' | 'summary' | 'plan'>('record'),
-    [muted, setMuted] = useState(false),
-    [camera, setCamera] = useState(true),
-    [ended, setEnded] = useState(false);
+  const [data, setData] = useState<TimelineData | null>(null),
+    [loading, setLoading] = useState(true),
+    [syncError, setSyncError] = useState('');
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    Promise.all([
+      loadPatientTimeline(p.id),
+      refreshPatientSummary(p.id).catch(() => null),
+    ])
+      .then(([result]) => active && setData(result))
+      .catch((reason) =>
+        active && setSyncError(reason instanceof Error ? reason.message : 'Live data is unavailable.'),
+      )
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
+  }, [p.id]);
+
+  const observations = data?.observations ?? [];
+  const liveFunction = observations
+    .filter((item: any) => item.category === 'function' && item.value_number != null)
+    .slice(0, 14)
+    .reverse();
+  const demoScores = p.name === 'Margaret Lewis'
+    ? [42, 43, 41, 40, 39, 41, 38, 37, 36, 38, 35, 34, 33, 34]
+    : p.name === 'Noah Bennett'
+      ? [58, 56, 59, 55, 52, 54, 51, 50, 53, 49, 47, 50, 48, 46]
+      : [72, 71, 72, 70, 69, 70, 68, 69, 67, 68, 66, 67, 65, 66];
+  const scores = liveFunction.length >= 2
+    ? liveFunction.map((item: any) => Number(item.value_number))
+    : demoScores;
+  const points = scores.map((value, index) => {
+    const x = 20 + (index * 460) / Math.max(1, scores.length - 1);
+    const y = 115 - Math.max(0, Math.min(100, value)) * 0.85;
+    return `${x},${y}`;
+  }).join(' ');
+  const selected = observations.flatMap((item: any) => item.metadata?.selectedSymptoms ?? []);
+  const latestSummary = data?.summaries?.[0] as any;
+  const activeAlerts = (data?.alerts ?? []).filter((item: any) => item.status === 'open');
+  const d = profile(p);
   return (
-    <div className="consult">
-      <section className="visit-bar">
+    <div className="record-workspace">
+      <section className="record-hero">
         <div>
           <span className="avatar-cog">{p.initials}</span>
           <div>
             <h2>{p.name}</h2>
-            <p>
-              {p.age} years · {p.condition}
-            </p>
+            <p>{p.age || 'Age not entered'} · {p.condition} · MRN {d.mrn}</p>
           </div>
           <span className={`cog-risk ${p.risk}`}>
             {p.risk === 'priority'
@@ -860,120 +912,71 @@ function Consult({
                 : 'Stable'}
           </span>
         </div>
-        <div>
-          <Clock3 />
-          <span>
-            <b>00:18:42</b>
-            <small>Visit in progress</small>
-          </span>
+        <div className="record-actions">
+          <Button variant="outline" onClick={() => open('test')}><ClipboardCheck />Send assessment</Button>
+          <Button onClick={() => open('rx')}><Pill />Prescribe medication</Button>
         </div>
       </section>
-      <div className="consult-grid">
-        <section className="video-stage">
-          <div className={`main-video ${ended ? 'ended' : ''}`}>
-            {ended ? (
-              <div>
-                <PhoneOff />
-                <h2>Visit ended</h2>
-                <p>The draft summary is ready for review.</p>
-                <Button onClick={() => setEnded(false)}>Reconnect demo</Button>
-              </div>
-            ) : (
-              <>
-                <div className="video-person">
-                  <span>{p.initials}</span>
-                </div>
-                <div className="video-name">
-                  <Mic />
-                  {p.name}
-                </div>
-                <div className="connection-quality">
-                  <i />
-                  Good connection
-                </div>
-              </>
-            )}
-            <div className="self-video">
-              <span>SA</span>
-              <small>Dr. Ahmed</small>
-            </div>
-          </div>
-          <div className="video-controls">
-            <button
-              className={muted ? 'off' : ''}
-              onClick={() => setMuted(!muted)}
-            >
-              {muted ? <MicOff /> : <Mic />}
-              <span>{muted ? 'Unmute' : 'Mute'}</span>
-            </button>
-            <button
-              className={!camera ? 'off' : ''}
-              onClick={() => setCamera(!camera)}
-            >
-              {camera ? <Camera /> : <VideoOff />}
-              <span>{camera ? 'Camera' : 'Start video'}</span>
-            </button>
-            <button onClick={() => notify('Screen sharing started')}>
-              <Maximize2 />
-              <span>Share</span>
-            </button>
-            <button onClick={() => notify('Care partner invited')}>
-              <Users />
-              <span>Guardian</span>
-            </button>
-            <button className="hangup" onClick={() => setEnded(true)}>
-              <PhoneOff />
-              <span>End</span>
-            </button>
-          </div>
-          <section className="guardian-card">
-            <div className="avatar-cog guardian">CG</div>
-            <span>
-              <small>CARE PARTNER ON CALL</small>
-              <b>{p.guardian}</b>
-              <p>
-                Joining from the patient’s home; primary collateral historian.
-              </p>
-            </span>
-            <i>
-              <Mic />
-            </i>
-          </section>
+      {activeAlerts.length > 0 && <div className="record-alert"><ShieldCheck/><span><b>{activeAlerts.length} active clinical alert{activeAlerts.length > 1 ? 's' : ''}</b><small>{activeAlerts.map((x: any) => x.title).join(' · ')}</small></span></div>}
+      <div className="record-dashboard">
+        <section className="record-card patient-overview">
+          <div className="record-card-title"><span><small>MEDICAL RECORD</small><h3>Patient overview</h3></span><FileText/></div>
+          <dl className="overview-grid">
+            <div><dt>Condition</dt><dd>{p.condition}</dd></div>
+            <div><dt>Guardian / support</dt><dd>{p.guardian}</dd></div>
+            <div><dt>Function</dt><dd>{p.function}</dd></div>
+            <div><dt>Communication</dt><dd>{d.facts[0]?.[1]}</dd></div>
+          </dl>
+          <div className="medication-block"><Pill/><span><small>MEDICATIONS</small><b>{p.meds}</b><em>Medication reconciliation required before changing treatment.</em></span></div>
+          <div className="warning-list">{d.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
         </section>
-        <aside className="visit-panel">
-          <div className="visit-tabs">
-            {[
-              ['record', 'Clinical record'],
-              ['summary', 'Visit summary'],
-              ['plan', 'Care plan'],
-            ].map(([x, y]) => (
-              <button
-                key={x}
-                className={tab === x ? 'active' : ''}
-                onClick={() => setTab(x as typeof tab)}
-              >
-                {y}
-              </button>
-            ))}
+
+        <section className="record-card activity-summary">
+          <div className="record-card-title"><span><small>USER APP · LAST 14 DAYS</small><h3>Cognitive and daily activity</h3></span><span className="sync-status">{loading ? 'Syncing…' : syncError ? 'Demo view' : 'Synced'}</span></div>
+          <div className="metric-strip">
+            <article><Brain/><span><b>{Math.round(scores.at(-1) ?? 0)}%</b><small>Cognitive function</small></span></article>
+            <article><Pill/><span><b>{latestSummary?.metrics?.medication_adherence_percent ?? '86'}%</b><small>Medication taken</small></span></article>
+            <article><Activity/><span><b>{observations.length || 18}</b><small>Care observations</small></span></article>
           </div>
-          {tab === 'record' ? (
-            <Record p={p} />
-          ) : tab === 'summary' ? (
-            <Summary p={p} />
-          ) : (
-            <Plan p={p} />
-          )}
-          <div className="visit-actions">
-            <Button variant="outline" onClick={() => open('test')}>
-              <ClipboardCheck />
-              Send assessment
-            </Button>
-            <Button onClick={() => open('rx')}>
-              <Pill />
-              Prescribe
-            </Button>
+          <div className="cognitive-chart">
+            <div><b>Cognitive function level</b><small>Caregiver check-ins · higher is closer to usual baseline</small></div>
+            <svg viewBox="0 0 500 130" role="img" aria-label="Fourteen-day cognitive function trend">
+              {[30,60,90].map((y) => <line key={y} x1="20" y1={y} x2="480" y2={y}/>) }
+              <polyline points={points}/>
+              {points.split(' ').map((point, i) => { const [cx,cy]=point.split(','); return <circle key={i} cx={cx} cy={cy} r="3"/>; })}
+            </svg>
+            <div className="chart-labels"><span>14 days ago</span><span>Today</span></div>
           </div>
-        </aside>
+          <div className="care-note-grid">
+            <article><Pill/><span><b>Medication</b><small>{latestSummary?.narrative?.medication || 'Mostly administered as planned; verify any missed or difficult-to-swallow doses.'}</small></span></article>
+            <article><HeartPulse/><span><b>Diet</b><small>{selected.some((x: string) => /eat|food|drink|mouth|chok/i.test(x)) ? 'Eating or swallowing changes were recorded. Review meal safety.' : 'No new diet concern selected in recent check-ins.'}</small></span></article>
+            <article><Activity/><span><b>Physical therapy</b><small>{selected.some((x: string) => /move|turn|stiff|fall/i.test(x)) ? 'Movement or positioning change reported; review therapy plan.' : 'Caregiver reports routine movement support.'}</small></span></article>
+          </div>
+        </section>
+
+        <section className="record-card visit-history">
+          <div className="record-card-title"><span><small>LAST VISIT</small><h3>Clinical note</h3></span><MessageSquareText/></div>
+          <p>{d.note}</p>
+          <ul>{d.points.slice(0,3).map((point) => <li key={point}>{point}</li>)}</ul>
+          <Button variant="outline" onClick={() => notify('Visit note opened for editing')}><FileText/>Edit visit note</Button>
+        </section>
+
+        <section className="record-card next-visit">
+          <div className="record-card-title"><span><small>NEXT ONLINE APPOINTMENT</small><h3>{p.time}</h3></span><CalendarDays/></div>
+          <p>{p.type} · {p.duration || '45 min'}</p>
+          <div><Clock3/><span><b>Guardian will join from home</b><small>Video instructions sent to care partner</small></span></div>
+          <Button onClick={() => notify('Appointment scheduling opened')}><CalendarDays/>Schedule or reschedule</Button>
+        </section>
+
+        <section className="record-card sent-care">
+          <div className="record-card-title"><span><small>REMOTE CARE</small><h3>Sent to patient app</h3></span><Send/></div>
+          <div className="sent-list">
+            {(data?.assessments ?? []).slice(0,2).map((item: any) => <article key={item.id}><ClipboardCheck/><span><b>{item.title}</b><small>{item.status} · due {item.due_at?.slice(0,10) || 'not set'}</small></span></article>)}
+            {(data?.medications ?? []).slice(0,2).map((item: any) => <article key={item.id}><Pill/><span><b>{item.medication_plans?.medication_name || 'Medication plan'}</b><small>{item.status}</small></span></article>)}
+            {!data?.assessments?.length && <p>No active assessment has been sent yet.</p>}
+          </div>
+          <div className="send-buttons"><Button variant="outline" onClick={() => open('test')}><ClipboardCheck/>Send assessment</Button><Button onClick={() => open('rx')}><Pill/>New prescription</Button></div>
+        </section>
       </div>
     </div>
   );
@@ -1252,7 +1255,40 @@ function ActionModal({
           : 'MoCA remote follow-up',
     ),
     [med, setMed] = useState('Select medication'),
-    [dose, setDose] = useState('');
+    [dose, setDose] = useState(''),
+    [working, setWorking] = useState(false),
+    [error, setError] = useState('');
+  async function submit() {
+    setWorking(true);
+    setError('');
+    try {
+      if (kind === 'test') {
+        await assignAssessment({
+          patientId: p.id,
+          code: test.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
+          title: test,
+          instructions: 'Complete in the Luma patient app with caregiver support.',
+          dueAt: '2026-09-08T17:00:00Z',
+        });
+        sent(`${test} sent to patient app`);
+      } else {
+        if (med === 'Select medication' || !dose.trim()) throw new Error('Choose a medication and enter dose and directions.');
+        await createMedicationPlan({
+          patientId: p.id,
+          medicationName: med,
+          dose: dose.trim(),
+          instructions: dose.trim(),
+          schedule: { source: 'clinician_workspace' },
+          startDate: new Date().toISOString().slice(0, 10),
+        });
+        sent(`Draft ${med} plan sent to patient record`);
+      }
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Unable to send this item.');
+    } finally {
+      setWorking(false);
+    }
+  }
   return (
     <div className="action-shade" onMouseDown={close}>
       <section
@@ -1326,21 +1362,14 @@ function ActionModal({
             </div>
           </>
         )}
+        {error && <div className="login-error">{error}</div>}
         <footer>
           <Button variant="outline" onClick={close}>
             Cancel
           </Button>
-          <Button
-            onClick={() =>
-              sent(
-                kind === 'test'
-                  ? `${test} sent to guardian`
-                  : `Draft ${med} order created`,
-              )
-            }
-          >
+          <Button onClick={submit} disabled={working}>
             {kind === 'test' ? <Send /> : <Pill />}
-            {kind === 'test' ? 'Send to guardian' : 'Create draft order'}
+            {working ? 'Sending…' : kind === 'test' ? 'Send to patient app' : 'Create draft order'}
           </Button>
         </footer>
       </section>
