@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Activity,
   ArrowLeft,
@@ -37,6 +37,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createPatientInvitation } from '@/lib/clinical-data';
+import {
+  getClinicianSession,
+  isSupabaseConfigured,
+  signInClinician,
+  signOutClinician,
+} from '@/lib/supabase';
 
 type Patient = {
   name: string;
@@ -167,7 +173,27 @@ export default function Home() {
     ),
     [patient, setPatient] = useState(appointments[0]),
     [toast, setToast] = useState(''),
-    [modal, setModal] = useState<'test' | 'rx' | null>(null);
+    [modal, setModal] = useState<'test' | 'rx' | null>(null),
+    [authReady, setAuthReady] = useState(false),
+    [clinicianName, setClinicianName] = useState('');
+  useEffect(() => {
+    getClinicianSession()
+      .then((result) => {
+        if (result) setClinicianName(result.profile.full_name || 'Clinician');
+      })
+      .finally(() => setAuthReady(true));
+  }, []);
+  if (!authReady)
+    return (
+      <div className="clinician-login">
+        <div className="login-card">
+          <Brain />
+          <h1>Opening Luma…</h1>
+          <p>Checking your clinician session.</p>
+        </div>
+      </div>
+    );
+  if (!clinicianName) return <ClinicianLogin onSignedIn={setClinicianName} />;
   function notify(x: string) {
     setToast(x);
     setTimeout(() => setToast(''), 2600);
@@ -182,6 +208,10 @@ export default function Home() {
         view={view}
         patients={() => setView('patients')}
         schedule={() => setView('schedule')}
+        signOut={async () => {
+          await signOutClinician();
+          setClinicianName('');
+        }}
       />
       <main>
         <Top view={view} back={() => setView('patients')} notify={notify} />
@@ -213,14 +243,88 @@ export default function Home() {
     </div>
   );
 }
+function ClinicianLogin({
+  onSignedIn,
+}: {
+  onSignedIn: (name: string) => void;
+}) {
+  const [email, setEmail] = useState(''),
+    [password, setPassword] = useState(''),
+    [error, setError] = useState(''),
+    [working, setWorking] = useState(false);
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setWorking(true);
+    setError('');
+    try {
+      const result = await signInClinician(email, password);
+      onSignedIn(result.profile.full_name || 'Clinician');
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Unable to sign in.');
+    } finally {
+      setWorking(false);
+    }
+  }
+  return (
+    <div className="clinician-login">
+      <form className="login-card" onSubmit={submit}>
+        <div className="login-brand">
+          <Brain />
+          <span>
+            <b>Luma</b>
+            <small>CLINICIAN WORKSPACE</small>
+          </span>
+        </div>
+        <small>SECURE ACCESS</small>
+        <h1>Sign in to your workspace</h1>
+        <p>
+          Use your clinician account to manage patients, invitations,
+          assessments, and treatment plans.
+        </p>
+        <label>
+          <span>Email address</span>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            placeholder="clinician@example.com"
+          />
+        </label>
+        <label>
+          <span>Password</span>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+            autoComplete="current-password"
+          />
+        </label>
+        {error && <div className="login-error">{error}</div>}
+        <Button type="submit" disabled={working || !isSupabaseConfigured}>
+          {working ? 'Signing in…' : 'Sign in'}
+        </Button>
+        <div className="login-note">
+          <ShieldCheck />
+          Synthetic demo environment. Do not enter real patient information.
+        </div>
+      </form>
+    </div>
+  );
+}
 function Sidebar({
   view,
   patients,
   schedule,
+  signOut,
 }: {
   view: string;
   patients: () => void;
   schedule: () => void;
+  signOut: () => void;
 }) {
   return (
     <aside className="cog-sidebar">
@@ -278,6 +382,9 @@ function Sidebar({
         </div>
         <Settings />
       </div>
+      <button className="clinician-signout" onClick={signOut}>
+        Sign out
+      </button>
     </aside>
   );
 }
