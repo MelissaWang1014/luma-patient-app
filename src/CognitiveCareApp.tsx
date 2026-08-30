@@ -1240,8 +1240,8 @@ export default function CognitiveCareApp({ patientId, databasePatientId }: { pat
         ...items,
       ]);
     };
-    window.addEventListener("luma-movement-reminder", record);
-    return () => window.removeEventListener("luma-movement-reminder", record);
+    window.addEventListener("nest-c-movement-reminder", record);
+    return () => window.removeEventListener("nest-c-movement-reminder", record);
   }, [patient.id]);
   useEffect(() => {
     if (!databasePatientId) return;
@@ -1452,7 +1452,7 @@ export default function CognitiveCareApp({ patientId, databasePatientId }: { pat
             <i>
               <Icon name="care" size={18} />
             </i>
-            Luma Care
+            Nest C Care
           </button>
           <div className={`active-patient-chip ${patient.id}`}>
             <span>{patient.initial}</span>
@@ -1787,7 +1787,7 @@ function Reminders({
   function mark(title: string, next: "done" | "missed") {
     setStatus((items) => ({ ...items, [title]: next }));
     window.dispatchEvent(
-      new CustomEvent("luma-movement-reminder", {
+      new CustomEvent("nest-c-movement-reminder", {
         detail: { patientId: patient.id, title, status: next },
       }),
     );
@@ -2372,7 +2372,7 @@ function Changes({
           </i>
           <h2>Charts will appear after data is recorded</h2>
           <p>
-            Use the daily checklist and observation note on the Today page. Luma needs records from
+            Use the daily checklist and observation note on the Today page. Nest C needs records from
             multiple dates before it can compare changes or create an AI trend summary.
           </p>
           <div>

@@ -411,7 +411,7 @@ export default function App() {
               <i>
                 <Icon name="heart" size={19} />
               </i>
-              Luma
+              Nest C
             </button>
           )}
           <button className="switch-role" onClick={() => setRole(null)}>
@@ -501,7 +501,7 @@ export default function App() {
                 <small className="note">
                   {chatListening
                     ? "Live transcription is appearing as you speak — tap the red microphone to stop."
-                    : "Luma supports your care — it does not replace a healthcare professional."}
+                    : "Nest C supports your care — it does not replace a healthcare professional."}
                 </small>
               </article>
             </>
@@ -1053,7 +1053,7 @@ function LoginPage({
             <i>
               <Icon name="heart" size={22} />
             </i>
-            <span>Luma</span>
+            <span>Nest C</span>
           </div>
           <div className="auth-message">
             <span>✦</span>
@@ -1095,10 +1095,10 @@ function LoginPage({
             <i>
               <Icon name="heart" size={18} />
             </i>
-            Luma
+            Nest C
           </div>
           <div className="auth-heading">
-            <small>WELCOME {mode === "signin" ? "BACK" : "TO LUMA"}</small>
+            <small>WELCOME {mode === "signin" ? "BACK" : "TO NEST C"}</small>
             <h2>{mode === "signin" ? "Sign in to continue" : "Create your account"}</h2>
             <p>
               {mode === "signin"
@@ -1223,7 +1223,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
           <i>
             <Icon name="heart" size={20} />
           </i>
-          <span>Luma</span>
+          <span>Nest C</span>
         </button>
         <div>
           <a href="#features">Features</a>
@@ -1243,14 +1243,14 @@ function LandingPage({ onStart }: { onStart: () => void }) {
               <em>Together.</em>
             </h1>
             <p>
-              Luma helps people living with bipolar disorder and their caregivers notice patterns,
+              Nest C helps people living with bipolar disorder and their caregivers notice patterns,
               support daily routines, and prepare clearer conversations with the care team.
             </p>
             <div className="hero-actions">
               <button onClick={onStart}>
                 Explore the demo <span>→</span>
               </button>
-              <a href="#features">See what Luma does</a>
+              <a href="#features">See what Nest C does</a>
             </div>
             <div className="trust-row">
               <span>
@@ -1276,7 +1276,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
                   <i>
                     <Icon name="heart" size={13} />
                   </i>
-                  Luma
+                  Nest C
                 </b>
                 <span>•••</span>
               </div>
@@ -1400,7 +1400,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
               made easier to see.
             </h2>
             <p>
-              Luma brings scattered details into one calm, understandable view—without reducing a
+              Nest C brings scattered details into one calm, understandable view—without reducing a
               person to a score.
             </p>
             <button onClick={onStart}>Choose your experience →</button>
@@ -1435,7 +1435,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
             <small>DESIGNED WITH CARE</small>
             <h2>Supportive—not diagnostic.</h2>
             <p>
-              Luma helps organize personal observations and prepare conversations. It does not
+              Nest C helps organize personal observations and prepare conversations. It does not
               diagnose, predict mood episodes, or replace a qualified healthcare professional.
             </p>
           </div>
@@ -1444,7 +1444,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
           <span>✦</span>
           <h2>Start with one gentle check-in.</h2>
           <p>Explore the patient and caregiver demo experiences.</p>
-          <button onClick={onStart}>Open Luma demo →</button>
+          <button onClick={onStart}>Open Nest C demo →</button>
         </section>
       </main>
       <footer>
@@ -1452,7 +1452,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
           <i>
             <Icon name="heart" size={16} />
           </i>
-          <span>Luma</span>
+          <span>Nest C</span>
         </button>
         <p>Hackathon prototype • Synthetic demonstration data only</p>
       </footer>
@@ -2466,13 +2466,13 @@ function RolePicker({ onChoose }: { onChoose: (role: "patient" | "parent") => vo
           <i>
             <Icon name="heart" size={28} />
           </i>
-          <small>WELCOME TO LUMA</small>
+          <small>WELCOME TO NEST C</small>
           <h1>
             Care feels better
             <br />
             when we do it together.
           </h1>
-          <p>Choose how you’d like to use Luma today.</p>
+          <p>Choose how you’d like to use Nest C today.</p>
         </div>
         <div className="role-options">
           <button onClick={() => onChoose("patient")}>
@@ -2603,7 +2603,7 @@ function ParentApp({ onSwitch }: { onSwitch: () => void }) {
             <i>
               <Icon name="heart" size={19} />
             </i>
-            Luma
+            Nest C
           </button>
           <button className="switch-role" onClick={onSwitch}>
             Switch view

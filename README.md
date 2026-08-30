@@ -1,4 +1,4 @@
-# Luma Patient App
+# Nest C Patient App
 
 Interactive patient-facing mobile prototype for a healthcare hackathon.
 

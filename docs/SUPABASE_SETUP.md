@@ -1,6 +1,6 @@
-# Connect Luma to Supabase
+# Connect Nest C to Supabase
 
-Luma uses one Supabase project for the caregiver and clinician applications. Use synthetic data only in the current prototype.
+Nest C uses one Supabase project for the caregiver and clinician applications. Use synthetic data only in the current prototype.
 
 ## 1. Apply the database migrations
 

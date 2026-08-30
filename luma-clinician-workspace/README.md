@@ -1,4 +1,4 @@
-# Luma Clinician Workspace
+# Nest C Clinician Workspace
 
 Interactive clinician-side demo for reviewing synthetic behavioral-health records, patient-reported routine data, risk signals, medication adherence, and personalized care tasks.
 

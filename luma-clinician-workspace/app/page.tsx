@@ -202,7 +202,7 @@ export default function Home() {
       <div className="clinician-login">
         <div className="login-card">
           <Brain />
-          <h1>Opening Luma…</h1>
+          <h1>Opening Nest C…</h1>
           <p>Checking your clinician session.</p>
         </div>
       </div>
@@ -291,7 +291,7 @@ function ClinicianLogin({
         <div className="login-brand">
           <Brain />
           <span>
-            <b>Luma</b>
+            <b>Nest C</b>
             <small>CLINICIAN WORKSPACE</small>
           </span>
         </div>
@@ -352,7 +352,7 @@ function Sidebar({
         <i>
           <Brain />
         </i>
-        <b>Luma</b>
+        <b>Nest C</b>
         <small>COGNITIVE CARE</small>
       </button>
       <nav>
@@ -541,7 +541,7 @@ function Registry({
         },
       ]);
       window.alert(
-        `Patient added. One-time Luma access code: ${invitation.invitation_code}\n\nShare this privately with the patient or guardian. It expires in 7 days.`,
+        `Patient added. One-time Nest C access code: ${invitation.invitation_code}\n\nShare this privately with the patient or guardian. It expires in 7 days.`,
       );
     } catch (reason) {
       const message =
@@ -1365,7 +1365,7 @@ function ActionModal({
           patientId: p.id,
           code: test.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
           title: test,
-          instructions: 'Complete in the Luma patient app with caregiver support.',
+          instructions: 'Complete in the Nest C patient app with caregiver support.',
           dueAt: '2026-09-08T17:00:00Z',
         });
         sent(`${test} sent to patient app`);
