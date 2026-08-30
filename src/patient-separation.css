@@ -1,0 +1,16 @@
+.active-patient-chip{max-width:145px;padding:5px 7px;display:flex;align-items:center;gap:6px;border:1px solid #d8e3de;border-radius:12px;background:#fff;color:#52635b}
+.active-patient-chip>span{width:25px;height:25px;min-width:25px;border-radius:8px;display:grid;place-items:center;background:#dfeae5;color:#58776c;font:13px 'DM Serif Display'}
+.active-patient-chip.margaret>span{background:#e8e4ee;color:#6d6881}
+.active-patient-chip>div{min-width:0;display:flex;flex-direction:column}
+.active-patient-chip small{font-size:6px;font-weight:700;letter-spacing:.65px;color:#8a9690}
+.active-patient-chip b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8.5px}
+.patient-demo-list{display:flex;flex-direction:column;gap:7px}
+.demo-login.patient-demo{height:auto;min-height:57px;padding:8px 10px;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:8px;text-align:left}
+.patient-demo .demo-avatar{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#e2ece7;color:#58776c;font:16px 'DM Serif Display'}
+.patient-demo:nth-child(2) .demo-avatar{background:#e8e4ee;color:#6d6881}
+.patient-demo>span:nth-child(2){min-width:0;display:flex;flex-direction:column}
+.patient-demo b{font-size:11px}
+.patient-demo small{color:#718078;font-size:8.5px}
+.patient-demo em{margin-top:2px;color:#8a938e;font-size:7.5px;font-style:normal}
+.patient-demo strong{color:#718078;font-size:14px}
+@media(max-width:520px){.mvp-brand{font-size:18px}.active-patient-chip{max-width:136px}}

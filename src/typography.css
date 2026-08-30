@@ -1,0 +1,42 @@
+/* Readability pass: keep the compact mobile layout while avoiding tiny text. */
+:root{font-size:17px}
+body{font-size:16px;line-height:1.5}
+
+.welcome>small,.hero>small,.title small,.progress>small,.recipe small,
+.role-hero>small,.auth-heading>small,.auth-message>small,.calendar-head small,
+.summary-top small,.diary-heading small{font-size:11px}
+
+.welcome p,.hero p,.progress p,.role-hero p{font-size:15px}
+.message p,.composer input,.profile p,.journal-paper textarea{font-size:14px}
+.chips button,.private,.link,.upload small,.routine small,.settings small,
+.routine em,.recipe button,.timeline p,.switch-role,.condition-tabs button,
+.role-options small,.auth-form-panel input,.auth-submit{font-size:12px}
+
+.note,.warning,.week small,.date small,.timeline article>div>small,.mood,
+.profile small,.stats small,nav button,.role-note,.child-card small,
+.child-card button,.symptom-list em,.scale i,.trend-card small,.trend-card button,
+.calendar-head small,.weekdays span,.month-grid>button,.calendar-legend,
+.day-details-head small,.day-details-head>span,.daily-metrics small,
+.daily-metrics span i,.day-note>span,.day-share>span,.record-disclaimer,
+.summary-sources small,.summary-disclaimer,.diary-heading>span,.diary-mood,
+.diary-controls button,.diary-note,.history-switch button,.diary-back,
+.bedtime-row small,.movement-progress>small,.voice-entry small,
+.journal-title-row>button,.upload-zone small,.uploaded-record small,
+.records-info p,.journal-toolbar>span,.journal-toolbar button,
+.journal-date,.journal-footer,.journal-prompt small{font-size:10px}
+
+.upload b,.routine b,.settings b,.daily-metrics b,.summary-sources b,
+.voice-entry b,.symptom-list b,.trend-card p{font-size:12px}
+
+.auth-message p{font-size:13px}.auth-preview small{font-size:9px}.auth-preview b{font-size:12px}
+.auth-tabs button,.auth-form-panel label>span,.demo-login{font-size:11px}
+.auth-form-panel label>span button,.password-field button,.auth-divider{font-size:10px}
+.auth-privacy{font-size:9px}
+
+.diary-sheet p{font-size:12px}.diary-sheet>small,.paper-date{font-size:10px}
+.day-summary,.day-note p,.day-share p{font-size:11px}
+
+@media(max-width:380px){
+  :root{font-size:16px}
+  .diary-sheet p{font-size:10px}
+}

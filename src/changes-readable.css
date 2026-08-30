@@ -1,0 +1,42 @@
+/* Readability overrides for the data-heavy Changes screen. */
+.analytics-dashboard{padding:14px}
+.analytics-heading small,.symptom-chart small,.analytics-lower small{font-size:9px;letter-spacing:.7px}
+.analytics-heading h2{font-size:20px;margin-top:3px}
+.analytics-heading>em{padding:5px 7px;font-size:9px}
+.analytics-kpis article{padding:10px 3px}
+.analytics-kpis b{font-size:18px}
+.analytics-kpis small{font-size:9px}
+.symptom-chart{padding:12px}
+.chart-title b{margin-top:2px;font-size:11px;line-height:1.3}
+.chart-title em{font-size:11px}
+.chart-switch{gap:4px;margin-top:10px}
+.chart-switch button{min-height:29px;padding:6px 2px;font-size:9px}
+.symptom-chart svg{height:112px}
+.chart-labels{font-size:9px}
+.analytics-lower{grid-template-columns:1fr;gap:8px}
+.adherence-ring,.weekly-bars{padding:11px}
+.adherence-ring{gap:10px}
+.adherence-ring b,.weekly-bars b{font-size:11px}
+.adherence-ring p{font-size:9px;line-height:1.4}
+.ring{width:60px;height:60px;min-width:60px;padding:6px}
+.ring:before{width:48px;height:48px}
+.ring span b{font-size:13px}
+.ring span small{font-size:8px}
+.weekly-bars section{height:72px;margin-top:8px}
+.weekly-bars i{width:13px}
+.weekly-bars section small{font-size:8px}
+.data-insight{padding:10px;gap:7px}
+.data-insight p{font-size:9.5px;line-height:1.5}
+.chart-footnote{font-size:8.5px;line-height:1.5}
+.trend-list{gap:9px}
+.trend-row{padding:13px}
+.trend-row small{font-size:9px}
+.trend-row b{margin-top:2px;font-size:12px;line-height:1.3}
+.trend-row p{font-size:10.5px}
+.trend-row em{padding:6px 7px;font-size:9px;text-align:center}
+.summary-action{padding:13px}
+.summary-action b{font-size:11.5px}
+.summary-action small{font-size:9.5px}
+.care-summary section b{font-size:10.5px}
+.care-summary section p{font-size:10px;line-height:1.55}
+.summary-safe{font-size:9px}

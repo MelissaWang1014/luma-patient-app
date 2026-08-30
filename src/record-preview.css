@@ -1,0 +1,17 @@
+.synthetic-load{width:100%;margin-bottom:11px;padding:12px 13px;display:flex;align-items:center;gap:10px;border:1px solid #d8e5df;border-radius:17px;background:#edf5f1;color:#58776c;text-align:left}
+.synthetic-load>span{flex:1;display:flex;flex-direction:column;gap:2px}
+.synthetic-load b{font-size:12px}.synthetic-load small{color:#78877f;font-size:10px}
+.upload-zone.limit-reached{opacity:.65;cursor:default}.record-file-list{display:flex;flex-direction:column;gap:7px}.record-file-list .uploaded-record{margin-top:0}
+.record-preview{margin-top:14px;padding:17px;border:1px solid #d8e5df;border-radius:21px;background:linear-gradient(145deg,#f0f7f3,#fbfaf6)}
+.record-preview-head{display:flex;align-items:center;justify-content:space-between}
+.record-preview-head>span{display:flex;align-items:center;gap:6px;color:#58776c;font-size:12px;font-weight:700}
+.record-preview-head>small{color:#8c9892;font-size:10px;letter-spacing:1px}
+.record-preview h2{margin:13px 0 10px;font-size:20px}
+.record-preview>p{margin:0 0 11px;padding:10px 11px;border-radius:13px;background:white;color:#617069;font-size:12px}
+.record-preview>p b{display:block;margin-bottom:3px;color:#82918a;font-size:10px;letter-spacing:.6px;text-transform:uppercase}
+.record-preview>div:nth-of-type(2){display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.record-preview>div:nth-of-type(2)>span{padding:10px;border-radius:13px;background:#ffffffa8;display:flex;flex-direction:column;gap:3px}
+.record-preview>div:nth-of-type(2) b{font-size:11px}
+.record-preview>div:nth-of-type(2) small{color:#78857f;font-size:10px;line-height:1.4}
+.preview-warning{display:block;margin-top:10px;color:#929d97;font-size:10px;line-height:1.4}
+.care-plan-review{margin-top:14px;padding:17px;border:1px solid #eadfc8;border-radius:21px;background:#fffaf0}.care-plan-review>small{color:#9a7c48;font-size:10px;font-weight:700;letter-spacing:1px}.care-plan-review h2{margin:5px 0 11px;font-size:21px}.care-plan-review ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}.care-plan-review li{padding:9px 10px;border-radius:12px;background:white;display:flex;flex-direction:column;gap:2px}.care-plan-review li b{font-size:12px}.care-plan-review li span{color:#78827d;font-size:10px}.care-plan-review p{margin:11px 0;color:#796f60;font-size:10px;line-height:1.5;display:flex;align-items:flex-start;gap:6px}.care-plan-review p svg{min-width:15px}.care-plan-review>button{width:100%;padding:11px;border:0;border-radius:13px;background:#58776c;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}.care-plan-review>button:disabled{background:#8fa39b}
