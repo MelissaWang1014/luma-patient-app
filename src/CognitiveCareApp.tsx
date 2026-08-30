@@ -1633,15 +1633,17 @@ function Today(props: TodayProps) {
           <div className="domain" key={domain.name}>
             <h3>{domain.name}</h3>
             {domain.items.map((item) => (
-              <label key={item}>
-                <input
-                  type="checkbox"
-                  checked={Boolean(symptoms[item])}
-                  onChange={() => setSymptoms((values) => ({ ...values, [item]: !values[item] }))}
-                />
+              <button
+                className="daily-check-row"
+                type="button"
+                role="checkbox"
+                aria-checked={Boolean(symptoms[item])}
+                key={item}
+                onClick={() => setSymptoms((values) => ({ ...values, [item]: !values[item] }))}
+              >
                 <i>{symptoms[item] && <Icon name="check" size={12} />}</i>
                 <span>{item}</span>
-              </label>
+              </button>
             ))}
           </div>
         ))}
@@ -2110,15 +2112,17 @@ function LegacyToday({
           <div className="domain" key={domain.name}>
             <h3>{domain.name}</h3>
             {domain.items.map((item) => (
-              <label key={item}>
-                <input
-                  type="checkbox"
-                  checked={Boolean(symptoms[item])}
-                  onChange={() => setSymptoms((values) => ({ ...values, [item]: !values[item] }))}
-                />
+              <button
+                className="daily-check-row"
+                type="button"
+                role="checkbox"
+                aria-checked={Boolean(symptoms[item])}
+                key={item}
+                onClick={() => setSymptoms((values) => ({ ...values, [item]: !values[item] }))}
+              >
                 <i>{symptoms[item] && <Icon name="check" size={12} />}</i>
                 <span>{item}</span>
-              </label>
+              </button>
             ))}
           </div>
         ))}
