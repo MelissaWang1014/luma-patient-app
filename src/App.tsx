@@ -408,9 +408,7 @@ export default function App() {
             </button>
           ) : (
             <button className="brand" onClick={() => setRole(null)}>
-              <i>
-                <Icon name="heart" size={19} />
-              </i>
+              <img className="nest-c-logo" src={`${import.meta.env.BASE_URL}nest-c-logo.png`} alt="" />
               Nest C
             </button>
           )}
@@ -1050,9 +1048,7 @@ function LoginPage({
       <main className="auth-card">
         <section className="auth-welcome">
           <div className="auth-brand">
-            <i>
-              <Icon name="heart" size={22} />
-            </i>
+            <img className="nest-c-logo" src={`${import.meta.env.BASE_URL}nest-c-logo.png`} alt="" />
             <span>Nest C</span>
           </div>
           <div className="auth-message">
@@ -1092,9 +1088,7 @@ function LoginPage({
         </section>
         <section className="auth-form-panel">
           <div className="auth-mobile-brand">
-            <i>
-              <Icon name="heart" size={18} />
-            </i>
+            <img className="nest-c-logo" src={`${import.meta.env.BASE_URL}nest-c-logo.png`} alt="" />
             Nest C
           </div>
           <div className="auth-heading">
@@ -1220,9 +1214,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
     <div className="landing">
       <header className="landing-nav">
         <button className="landing-brand">
-          <i>
-            <Icon name="heart" size={20} />
-          </i>
+          <img className="nest-c-logo" src={`${import.meta.env.BASE_URL}nest-c-logo.png`} alt="" />
           <span>Nest C</span>
         </button>
         <div>
@@ -1273,9 +1265,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
             <div className="preview-phone">
               <div className="preview-top">
                 <b>
-                  <i>
-                    <Icon name="heart" size={13} />
-                  </i>
+                  <img className="nest-c-logo" src={`${import.meta.env.BASE_URL}nest-c-logo.png`} alt="" />
                   Nest C
                 </b>
                 <span>•••</span>
@@ -1449,9 +1439,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
       </main>
       <footer>
         <button className="landing-brand">
-          <i>
-            <Icon name="heart" size={16} />
-          </i>
+          <img className="nest-c-logo" src={`${import.meta.env.BASE_URL}nest-c-logo.png`} alt="" />
           <span>Nest C</span>
         </button>
         <p>Hackathon prototype • Synthetic demonstration data only</p>
@@ -2600,9 +2588,7 @@ function ParentApp({ onSwitch }: { onSwitch: () => void }) {
       <main className="phone parent-phone">
         <header>
           <button className="brand" onClick={onSwitch}>
-            <i>
-              <Icon name="heart" size={19} />
-            </i>
+            <img className="nest-c-logo" src={`${import.meta.env.BASE_URL}nest-c-logo.png`} alt="" />
             Nest C
           </button>
           <button className="switch-role" onClick={onSwitch}>

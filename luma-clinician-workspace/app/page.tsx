@@ -201,7 +201,7 @@ export default function Home() {
     return (
       <div className="clinician-login">
         <div className="login-card">
-          <Brain />
+          <img className="nest-c-logo" src="/nest-c-logo.png" alt="" />
           <h1>Opening Nest C…</h1>
           <p>Checking your clinician session.</p>
         </div>
@@ -289,7 +289,7 @@ function ClinicianLogin({
     <div className="clinician-login">
       <form className="login-card" onSubmit={submit}>
         <div className="login-brand">
-          <Brain />
+          <img className="nest-c-logo" src="/nest-c-logo.png" alt="" />
           <span>
             <b>Nest C</b>
             <small>CLINICIAN WORKSPACE</small>
@@ -349,9 +349,7 @@ function Sidebar({
   return (
     <aside className="cog-sidebar">
       <button className="cog-brand" onClick={patients}>
-        <i>
-          <Brain />
-        </i>
+        <img className="nest-c-logo" src="/nest-c-logo.png" alt="" />
         <b>Nest C</b>
         <small>COGNITIVE CARE</small>
       </button>

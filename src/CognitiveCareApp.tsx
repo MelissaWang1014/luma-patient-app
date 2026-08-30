@@ -1449,9 +1449,7 @@ export default function CognitiveCareApp({ patientId, databasePatientId }: { pat
       <main className="mvp-phone">
         <header className="mvp-header">
           <button className="mvp-brand">
-            <i>
-              <Icon name="care" size={18} />
-            </i>
+            <img className="nest-c-logo" src={`${import.meta.env.BASE_URL}nest-c-logo.png`} alt="" />
             Nest C
           </button>
           <div className={`active-patient-chip ${patient.id}`}>

@@ -1,0 +1,23 @@
+.nest-c-logo {
+  display: block;
+  object-fit: cover;
+}
+
+.login-card > .nest-c-logo {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 12px;
+  border-radius: 15px;
+}
+
+.login-brand > .nest-c-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.cog-brand > .nest-c-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+}

@@ -1,0 +1,14 @@
+.nest-c-logo {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 11px;
+  object-fit: cover;
+  display: block;
+}
+
+.auth-brand .nest-c-logo { width: 39px; height: 39px; border-radius: 13px; }
+.auth-mobile-brand .nest-c-logo,
+.mvp-brand .nest-c-logo { width: 34px; height: 34px; }
+.landing-brand .nest-c-logo { width: 36px; height: 36px; }
+.preview-top .nest-c-logo { width: 20px; height: 20px; border-radius: 6px; }

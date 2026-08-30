@@ -24,4 +24,5 @@ import './analytics-mvp.css'
 import './changes-readable.css'
 import './patient-data-boundary.css'
 import './patient-separation.css'
+import './brand-logo.css'
 createRoot(document.getElementById('root')!).render(<StrictMode><App/></StrictMode>)
