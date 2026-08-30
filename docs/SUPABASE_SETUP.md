@@ -9,8 +9,11 @@ The GitHub integration reads migrations from the repository-root `supabase/` dir
 - `supabase/migrations/202608290001_initial_schema.sql`
 - `supabase/migrations/202608300001_cognitive_care_sync.sql`
 - `supabase/migrations/202608300002_summary_engine.sql`
+- `supabase/migrations/202608300003_demo_account_linking.sql`
 
 The second migration adds the shared cognitive-care workflow. A patient is a clinical subject and does not need a login. Caregivers and clinicians sign in through `profiles` and receive explicit access through `patient_access`.
+
+The fourth migration adds demo-only account linking for Margaret Lewis and Noah Bennett. Public signups are always caregivers; clinician roles must be assigned by an administrator.
 
 ## 2. Add browser-safe configuration
 

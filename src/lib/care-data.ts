@@ -8,6 +8,13 @@ function configured(){
  return supabase
 }
 
+export async function linkSyntheticPatient(externalRef:'SYN-ALZ-084'|'SYN-ASD-020',relationship:'caregiver'|'guardian'='caregiver'){
+ const client=configured()
+ const {data,error}=await client.rpc('link_synthetic_demo_patient',{target_ref:externalRef,requested_relationship:relationship})
+ if(error)throw error
+ return data
+}
+
 export async function listMyPatients(){
  const client=configured()
  const {data,error}=await client.from('patient_access').select('relationship,can_record,can_assign,patients(*)').eq('status','active')

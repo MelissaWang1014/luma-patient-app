@@ -5,6 +5,13 @@ function configured(){
  return supabase
 }
 
+export async function linkSyntheticPatient(externalRef:'SYN-ALZ-084'|'SYN-ASD-020'){
+ const client=configured()
+ const {data,error}=await client.rpc('link_synthetic_demo_patient',{target_ref:externalRef,requested_relationship:'clinician'})
+ if(error)throw error
+ return data
+}
+
 async function currentClinician(){
  const client=configured()
  const {data:{user},error}=await client.auth.getUser()

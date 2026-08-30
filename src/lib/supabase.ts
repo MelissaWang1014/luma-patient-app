@@ -22,7 +22,7 @@ export async function signIn(email:string,password:string){
 
 export async function signUp(name:string,email:string,password:string){
  if(!supabase)throw new Error('Database connection is not configured yet.')
- const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,role:'patient'}}})
+ const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,role:'caregiver'}}})
  if(error)throw error
  return data.session
 }

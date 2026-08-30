@@ -32,6 +32,9 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
