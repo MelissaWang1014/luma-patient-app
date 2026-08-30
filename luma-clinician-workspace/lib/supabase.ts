@@ -1,7 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-const url = import.meta.env.VITE_SUPABASE_URL?.trim();
-const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim();
+// These are public browser-client values. Supabase RLS remains the security boundary.
+const url =
+  import.meta.env.VITE_SUPABASE_URL?.trim() ||
+  'https://fnxaayakmgfjymoogcsf.supabase.co';
+const key =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim() ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZueGFheWFrbWdmanltb29nY3NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMTkyMTgsImV4cCI6MjEwMzU5NTIxOH0.rJMqobLS2bZG9JSuZ8M1XndoqiiB85n6KEJ_urgN6m8';
 
 export const isSupabaseConfigured = Boolean(url && key);
 export const supabase = isSupabaseConfigured
