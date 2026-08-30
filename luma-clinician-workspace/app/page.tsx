@@ -182,7 +182,7 @@ const week = [
   ['SUN', '6'],
 ];
 export default function Home() {
-  const [view, setView] = useState<'patients' | 'schedule' | 'record'>(
+  const [view, setView] = useState<'patients' | 'schedule' | 'record' | 'video'>(
       'patients',
     ),
     [patient, setPatient] = useState(appointments[0]),
@@ -212,9 +212,13 @@ export default function Home() {
     setToast(x);
     setTimeout(() => setToast(''), 2600);
   }
-  function join(p: Patient) {
+  function openRecord(p: Patient) {
     setPatient(p);
     setView('record');
+  }
+  function joinVisit(p: Patient) {
+    setPatient(p);
+    setView('video');
   }
   return (
     <div className="cog-shell">
@@ -228,11 +232,13 @@ export default function Home() {
         }}
       />
       <main>
-        <Top view={view} back={() => setView('patients')} notify={notify} />
+        <Top view={view} back={() => setView(view === 'video' ? 'schedule' : 'patients')} notify={notify} />
         {view === 'patients' ? (
-          <Registry open={join} schedule={() => setView('schedule')} />
+          <Registry open={openRecord} schedule={() => setView('schedule')} />
         ) : view === 'schedule' ? (
-          <Schedule join={join} notify={notify} />
+          <Schedule join={joinVisit} notify={notify} />
+        ) : view === 'video' ? (
+          <VideoConsult patient={patient} notify={notify} open={setModal} />
         ) : (
           <PatientRecordWorkspace patient={patient} notify={notify} open={setModal} />
         )}
@@ -414,10 +420,10 @@ function Top({
   return (
     <header className="cog-top">
       <div>
-        {view === 'record' ? (
+        {view === 'record' || view === 'video' ? (
           <button className="cog-back" onClick={back}>
             <ArrowLeft />
-            Patient records
+            {view === 'video' ? 'Video appointments' : 'Patient records'}
           </button>
         ) : (
           <>
@@ -881,6 +887,60 @@ function Schedule({
   );
 }
 type TimelineData = Awaited<ReturnType<typeof loadPatientTimeline>>;
+
+function VideoConsult({
+  patient: p,
+  notify,
+  open,
+}: {
+  patient: Patient;
+  notify: (x: string) => void;
+  open: (x: 'test' | 'rx') => void;
+}) {
+  const [tab, setTab] = useState<'record' | 'summary' | 'plan'>('record'),
+    [muted, setMuted] = useState(false),
+    [camera, setCamera] = useState(true),
+    [ended, setEnded] = useState(false);
+  return (
+    <div className="consult">
+      <section className="visit-bar">
+        <div>
+          <span className="avatar-cog">{p.initials}</span>
+          <div><h2>{p.name}</h2><p>{p.age} years · {p.condition}</p></div>
+          <span className={`cog-risk ${p.risk}`}>{p.risk === 'priority' ? 'Priority' : p.risk === 'watch' ? 'Monitor' : 'Stable'}</span>
+        </div>
+        <div><Clock3/><span><b>00:18:42</b><small>Visit in progress</small></span></div>
+      </section>
+      <div className="consult-grid">
+        <section className="video-stage">
+          <div className={`main-video ${ended ? 'ended' : ''}`}>
+            {ended ? (
+              <div><PhoneOff/><h2>Visit ended</h2><p>The draft summary is ready for review.</p><Button onClick={() => setEnded(false)}>Reconnect demo</Button></div>
+            ) : (
+              <><div className="video-person"><span>{p.initials}</span></div><div className="video-name"><Mic/>{p.name}</div><div className="connection-quality"><i/>Good connection</div></>
+            )}
+            <div className="self-video"><span>SA</span><small>Dr. Ahmed</small></div>
+          </div>
+          <div className="video-controls">
+            <button className={muted ? 'off' : ''} onClick={() => setMuted(!muted)}>{muted ? <MicOff/> : <Mic/>}<span>{muted ? 'Unmute' : 'Mute'}</span></button>
+            <button className={!camera ? 'off' : ''} onClick={() => setCamera(!camera)}>{camera ? <Camera/> : <VideoOff/>}<span>{camera ? 'Camera' : 'Start video'}</span></button>
+            <button onClick={() => notify('Screen sharing started')}><Maximize2/><span>Share</span></button>
+            <button onClick={() => notify('Care partner invited')}><Users/><span>Guardian</span></button>
+            <button className="hangup" onClick={() => setEnded(true)}><PhoneOff/><span>End</span></button>
+          </div>
+          <section className="guardian-card"><div className="avatar-cog guardian">CG</div><span><small>CARE PARTNER ON CALL</small><b>{p.guardian}</b><p>Joining from the patient’s home; primary collateral historian.</p></span><i><Mic/></i></section>
+        </section>
+        <aside className="visit-panel">
+          <div className="visit-tabs">
+            {([['record','Clinical record'],['summary','Visit summary'],['plan','Care plan']] as const).map(([key,label]) => <button key={key} className={tab === key ? 'active' : ''} onClick={() => setTab(key)}>{label}</button>)}
+          </div>
+          {tab === 'record' ? <Record p={p}/> : tab === 'summary' ? <Summary p={p}/> : <Plan p={p}/>}
+          <div className="visit-actions"><Button variant="outline" onClick={() => open('test')}><ClipboardCheck/>Send assessment</Button><Button onClick={() => open('rx')}><Pill/>Prescribe</Button></div>
+        </aside>
+      </div>
+    </div>
+  );
+}
 
 function PatientRecordWorkspace({
   patient: p,
