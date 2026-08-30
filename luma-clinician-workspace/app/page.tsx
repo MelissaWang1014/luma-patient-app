@@ -489,11 +489,8 @@ function Registry({
         `Patient added. One-time Luma access code: ${invitation.invitation_code}\n\nShare this privately with the patient or guardian. It expires in 7 days.`,
       );
     } catch (reason) {
-      window.alert(
-        reason instanceof Error
-          ? reason.message
-          : 'Unable to add patient. Confirm clinician sign-in and try again.',
-      );
+      const message = reason instanceof Error ? reason.message : typeof reason === 'object' && reason && 'message' in reason ? String(reason.message) : 'Unable to add patient.';
+      window.alert(message);
     } finally {
       setCreating(false);
     }
