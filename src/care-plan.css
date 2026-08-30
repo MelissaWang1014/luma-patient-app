@@ -1,0 +1,51 @@
+.care-plan-card { background: #fcfdfc; }
+.care-plan-group { margin-top: 7px; border: 1px solid #e0e7e3; border-radius: 14px; overflow: hidden; background: #fafbf9; }
+.care-plan-group > button { width: 100%; padding: 10px; display: flex; align-items: center; gap: 8px; border: 0; background: white; color: #425049; text-align: left; }
+.care-plan-group > button > i { width: 31px; height: 31px; min-width: 31px; border-radius: 10px; display: grid; place-items: center; background: #e5eee9; color: #58776c; }
+.care-plan-group > button > span { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.care-plan-group > button b { font-size: 10px; }
+.care-plan-group > button small { color: #87928c; font-size: 8px; }
+.care-plan-group > div { padding: 2px 11px 9px; }
+.care-plan-group > div section { padding: 8px 0; border-top: 1px solid #e7ece9; }
+.care-plan-group > div section b { color: #4e5d56; font-size: 9px; }
+.care-plan-group > div section p { margin: 3px 0 0; color: #69766f; font-size: 9px; line-height: 1.5; }
+.care-plan-group.restrictions > button > i { background: #f2e4e1; color: #985d56; }
+.care-plan-group.restrictions > div section p { margin: 0; color: #765e5a; }
+.care-plan-boundary { margin-top: 9px; display: flex; align-items: flex-start; gap: 5px; color: #89948e; font-size: 8px; line-height: 1.45; }
+.care-plan-boundary svg { min-width: 12px; }
+.reminder-task { padding: 10px 0; display: flex; align-items: flex-start; gap: 8px; border-top: 1px solid #e7ece9; cursor: pointer; }
+.reminder-task input { position: absolute; opacity: 0; }
+.reminder-task > i { width: 21px; height: 21px; min-width: 21px; border: 1px solid #bdcac4; border-radius: 7px; display: grid; place-items: center; color: white; }
+.reminder-task > span { display: flex; flex-direction: column; gap: 2px; }
+.reminder-task b { color: #46544d; font-size: 10px; }
+.reminder-task small { color: #7d8983; font-size: 8.5px; line-height: 1.45; }
+.reminder-task.done { opacity: .58; }
+.reminder-task.done > i { border-color: #58776c; background: #58776c; }
+.recipe-helper { background: #fffdf8; }
+.recipe-idea { padding: 12px; border-radius: 14px; background: #f3eee3; }
+.recipe-idea small { color: #8d7955; font-size: 8px; font-weight: 700; letter-spacing: .8px; }
+.recipe-idea h3 { margin: 4px 0; color: #4b4438; font-size: 14px; }
+.recipe-idea p, .recipe-blocked p { margin: 0; color: #6f685c; font-size: 9px; line-height: 1.5; }
+.recipe-blocked { padding: 11px; display: flex; align-items: flex-start; gap: 8px; border-radius: 13px; background: #f4ece4; color: #8b655a; }
+.recipe-blocked span { display: flex; flex-direction: column; gap: 3px; }
+.recipe-blocked b { font-size: 10px; }
+.recipe-error { display: block; margin-top: 7px; color: #8b655a; font-size: 8px; line-height: 1.4; }
+.movement-reminder { padding: 10px 0; display: grid; grid-template-columns: 31px 1fr; gap: 4px 8px; border-top: 1px solid #e7ece9; }
+.movement-reminder > i { grid-row: 1 / 3; width: 31px; height: 31px; border-radius: 10px; display: grid; place-items: center; background: #e5eee9; color: #58776c; }
+.movement-reminder > span { display: flex; flex-direction: column; gap: 2px; }
+.movement-reminder > span b { color: #46544d; font-size: 10px; }
+.movement-reminder > span small { color: #7d8983; font-size: 8.5px; line-height: 1.4; }
+.movement-reminder > div { grid-column: 2; display: flex; gap: 5px; margin-top: 3px; }
+.movement-reminder > div button { padding: 5px 7px; display: flex; align-items: center; gap: 3px; border-radius: 9px; background: white; font-size: 8px; font-weight: 700; }
+.movement-reminder .done-button { border: 1px solid #a9c3b6; color: #58776c; }
+.movement-reminder .missed-button { border: 1px solid #dfb9b4; color: #9b5d57; }
+.movement-reminder.done .done-button { background: #58776c; color: white; }
+.movement-reminder.missed .missed-button { background: #aa665f; color: white; }
+.daily-meals { margin-top: 9px; display: flex; flex-direction: column; gap: 6px; }
+.daily-meals section { padding: 8px 9px; border-radius: 10px; background: #fffdf9; }
+.daily-meals b { color: #725f3e; font-size: 9px; }
+.daily-meals p { margin-top: 2px; }
+.diet-profile { margin-bottom: 9px; display: flex; flex-direction: column; gap: 7px; }
+.diet-profile label { display: flex; flex-direction: column; gap: 3px; color: #655f54; font-size: 8.5px; font-weight: 700; }
+.diet-profile input { width: 100%; padding: 8px 9px; border: 1px solid #ddd8cd; border-radius: 10px; outline: 0; background: white; color: #3f453f; font: 9px 'DM Sans'; }
+.diet-profile input:focus { border-color: #8a9f94; }
