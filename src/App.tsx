@@ -1014,11 +1014,9 @@ function LoginPage({
         const normalizedName = name.trim().toLowerCase();
         const selectedPatient = normalizedName.includes("noah")
           ? "noah"
-          : normalizedName.includes("eleanor")
-            ? "eleanor"
-            : normalizedName.includes("margaret")
-              ? "margaret"
-              : undefined;
+          : normalizedName.includes("margaret")
+            ? "margaret"
+            : undefined;
         onContinue(session.user.id, selectedPatient);
       }
       else setError("Check your email to confirm your account, then sign in.");
@@ -1167,18 +1165,6 @@ function LoginPage({
             <span>choose a separated patient demo</span>
           </div>
           <div className="patient-demo-list">
-            <button
-              className="demo-login patient-demo"
-              onClick={() => onContinue(undefined, "eleanor")}
-            >
-              <span className="demo-avatar">E</span>
-              <span>
-                <b>{patients.eleanor.name}</b>
-                <small>Mild cognitive impairment</small>
-                <em>14-day demo history available</em>
-              </span>
-              <strong>→</strong>
-            </button>
             <button
               className="demo-login patient-demo"
               onClick={() => onContinue(undefined, "margaret")}
