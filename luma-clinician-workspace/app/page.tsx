@@ -40,6 +40,7 @@ import {
   assignAssessment,
   createMedicationPlan,
   createPatientInvitation,
+  loadClinicalPanel,
   loadPatientTimeline,
   refreshPatientSummary,
 } from '@/lib/clinical-data';
@@ -458,7 +459,41 @@ function Registry({
       'all',
     ),
     [added, setAdded] = useState<Patient[]>([]),
+    [syncedPatients, setSyncedPatients] = useState<Patient[]>([]),
     [creating, setCreating] = useState(false);
+  useEffect(() => {
+    loadClinicalPanel()
+      .then((links: any[]) => {
+        const mapped = links.flatMap((link: any) => {
+          const subjects = Array.isArray(link.patients) ? link.patients : [link.patients];
+          return subjects.filter(Boolean).map((subject: any): Patient => {
+            const name = subject.display_name || 'Unnamed patient';
+            const age = subject.date_of_birth
+              ? Math.max(0, new Date().getFullYear() - new Date(subject.date_of_birth).getFullYear())
+              : 0;
+            const latestSummary = [...(subject.patient_summaries || [])].sort((a: any,b: any) => String(b.period_end).localeCompare(String(a.period_end)))[0];
+            const openAlert = (subject.clinical_alerts || []).find((item: any) => item.status === 'open');
+            return {
+              id: subject.id,
+              name,
+              initials: name.split(/\s+/).map((part: string) => part[0]).join('').slice(0,2).toUpperCase(),
+              age,
+              condition: subject.condition_summary || 'Assessment pending',
+              guardian: 'Linked caregiver / guardian',
+              meds: 'See active medication plans',
+              score: latestSummary ? `14-day status: ${latestSummary.status}` : 'Awaiting 14-day summary',
+              risk: openAlert?.severity === 'red' ? 'priority' : latestSummary?.status === 'yellow' ? 'watch' : 'stable',
+              time: 'Not scheduled', duration: '45 min', type: 'Online cognitive follow-up',
+              function: subject.functional_status || 'Functional history pending',
+              lastUpdate: latestSummary?.period_end || 'Recently added',
+              alert: openAlert?.title || 'No open clinical alert',
+            };
+          });
+        });
+        setSyncedPatients(mapped);
+      })
+      .catch(() => {});
+  }, []);
   async function addPatient() {
     const name = window.prompt('Patient full name');
     if (!name?.trim()) return;
@@ -514,7 +549,10 @@ function Registry({
       setCreating(false);
     }
   }
-  const rows = [...appointments, ...added].filter(
+  const merged = [...appointments, ...syncedPatients, ...added].filter(
+    (item, index, all) => all.findIndex((candidate) => candidate.id === item.id) === index,
+  );
+  const rows = merged.filter(
     (p) =>
       (filter === 'all' || p.risk === filter) &&
       `${p.name} ${p.condition} ${p.guardian}`
